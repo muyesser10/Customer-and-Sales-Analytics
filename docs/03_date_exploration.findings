@@ -1,0 +1,69 @@
+# Date Exploration Findings
+
+## Date Coverage
+
+- First Order Date: 2010-12-29
+- Last Order Date: 2014-01-28
+- Historical Coverage: 37 months
+
+### Insight
+The dataset contains over three years of transactional history, providing sufficient data for trend and seasonality analysis.
+
+---
+
+## Orders by Year
+
+| Year | Orders |
+|------|--------:|
+| 2010 | 14 |
+| 2011 | 2,216 |
+| 2012 | 3,269 |
+| 2013 | 21,287 |
+| 2014 | 871 |
+
+### Insight
+Order volume increased significantly over time. The 2014 data appears incomplete and should be treated cautiously in trend analysis.
+
+---
+
+## Sales by Year
+
+| Year | Sales |
+|------|-------:|
+| 2010 | 43,419 |
+| 2011 | 7,075,088 |
+| 2012 | 5,842,231 |
+| 2013 | 16,344,878 |
+| 2014 | 45,642 |
+
+### Insight
+Sales peaked in 2013 with substantial growth compared to previous years.
+
+---
+
+### Average Order Value
+
+| Year | Average Order Value |
+|------|---------------------:|
+| 2010 | 3101.36 |
+| 2011 | 3192.73 |
+| 2012 | 1787.16 |
+| 2013 | 767.83 |
+| 2014 | 52.40 |
+
+#### Insight
+Despite increasing order volume over time, average order value shows a strong downward trend, indicating a shift toward lower-value transactions or changes in product mix.
+
+---
+
+## Quarterly Sales (2013 Focus)
+
+| Quarter | Sales |
+|---------|--------:|
+| Q1 | 2,678,708 |
+| Q2 | 3,973,264 |
+| Q3 | 4,364,829 |
+| Q4 | 5,328,077 |
+
+### Insight
+2013 shows a consistent quarter-over-quarter growth pattern, indicating strong and sustained business expansion throughout the year. Q4 represents the peak performance period.
