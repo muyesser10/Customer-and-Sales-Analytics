@@ -1,0 +1,141 @@
+
+-- Year over year revenue growth
+
+WITH yearly_sales AS(
+  SELECT
+  EXTRACT(year FROM order_date) AS order_year,
+  SUM(sales_amount) AS total_sales
+  FROM `analytics.fact_sales`
+  WHERE order_date IS NOT NULL
+  GROUP BY order_year
+)
+
+SELECT 
+order_year,
+total_sales,
+LAG(total_sales) OVER(ORDER BY order_year) AS previous_year_sales,
+ROUND(100*(total_sales - LAG(total_sales) OVER(ORDER BY order_year))/LAG(total_sales) OVER(ORDER BY order_year),2) as yoy_growth_percentage
+FROM yearly_sales
+ORDER BY order_year;
+
+
+
+-- Monthly sales view
+
+CREATE OR REPLACE VIEW analytics.monthly_sales AS
+SELECT 
+DATE_TRUNC(order_date, month) AS order_month,
+SUM(sales_amount) AS total_sales,
+COUNT(DISTINCT order_number) AS total_orders,
+COUNT(DISTINCT customer_key) AS total_customers,
+SUM(quantity) AS total_quantity
+FROM `analytics.fact_sales`
+WHERE order_date IS NOT NULL
+GROUP BY order_month;
+
+
+-- Monthly business performance
+
+SELECT 
+order_month,
+total_sales,
+total_orders,
+total_customers,
+total_quantity
+FROM `analytics.monthly_sales`
+ORDER BY order_month;
+
+
+-- Month over month revenue growth
+
+SELECT *,
+CONCAT(ROUND(100*(total_sales-previous_month_sales)/previous_month_sales,2),'%')
+AS mom_growth_percentage
+
+FROM(
+  SELECT 
+  order_month,
+  total_sales,
+  LAG(total_sales) OVER(ORDER BY order_month) AS previous_month_sales
+  FROM `analytics.monthly_sales`);
+
+
+-- Monthly cumulative revenue
+
+SELECT
+order_month,
+total_sales,
+SUM(total_sales) OVER(ORDER BY order_month ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_sales
+FROM `analytics.monthly_sales`
+ORDER BY order_month;
+
+
+-- 3 month moving average
+
+SELECT 
+order_month,
+ROUND(AVG(total_sales) OVER(ORDER BY order_month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),2) AS moving_avg_3_months
+FROM `analytics.monthly_sales`
+ORDER BY order_month;
+
+
+-- Customer growth trend
+CREATE OR REPLACE TABLE analytics.customer_growth AS
+SELECT *,
+ROUND(100*(active_customers-previous_month_customers)/previous_month_customers,2) AS growth_percentage
+
+FROM(
+  SELECT 
+  order_month,
+  total_customers AS active_customers,
+  LAG(total_customers) OVER(ORDER BY order_month) AS previous_month_customers
+  FROM `analytics.monthly_sales`);
+
+-- Monthly customer growth
+
+SELECT *
+FROM `analytics.customer_growth`
+ORDER BY order_month;
+
+-- Best and worst customer growth months
+
+SELECT *
+FROM `analytics.customer_growth`
+ORDER BY growth_percentage DESC
+LIMIT 1;
+
+
+SELECT *
+FROM `analytics.customer_growth`
+ORDER BY growth_percentage ASC
+LIMIT 1;
+
+
+-- Category trend analysis
+
+SELECT
+CONCAT(EXTRACT(YEAR FROM order_date),'-Q',EXTRACT(QUARTER FROM order_date) ) AS order_quarter,
+category,
+SUM(sales_amount) AS total_sales
+FROM `analytics.fact_sales` s
+JOIN `analytics.dim_products` p 
+USING(product_key)
+WHERE order_date IS NOT NULL
+GROUP BY order_quarter,category
+ORDER BY order_quarter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
