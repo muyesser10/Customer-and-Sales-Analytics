@@ -181,8 +181,10 @@ customer-sales-analytics/
 │   └── 09_performance_analysis.sql
 │
 └── docs/
-    ├── business_insights.md
-    ├── findings.md
+│    ├── business_insights.md
+│    ├── findings.md
+│
+└── screenshots  
     
 ```
 
